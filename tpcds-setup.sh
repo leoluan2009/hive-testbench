@@ -70,7 +70,7 @@ hadoop fs -chmod -R 777  ${DIR}/${SCALE}
 
 echo "TPC-DS text data generation complete."
 
-HIVE="beeline -n hive -u 'jdbc:hive2://localhost:2181/;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2?tez.queue.name=default' "
+HIVE="beeline -n hadoop -u 'jdbc:hive2://localhost:7001/' "
 
 # Create the text/flat tables as external tables. These will be later be converted to ORCFile.
 echo "Loading text data into external tables."
@@ -121,7 +121,7 @@ done
 make -j 1 -f $LOAD_FILE
 
 
-echo "Loading constraints"
-runcommand "$HIVE -f ddl-tpcds/bin_partitioned/add_constraints.sql --hivevar DB=${DATABASE}"
+#echo "Loading constraints"
+#runcommand "$HIVE -f ddl-tpcds/bin_partitioned/add_constraints.sql --hivevar DB=${DATABASE}"
 
 echo "Data loaded into database ${DATABASE}."
