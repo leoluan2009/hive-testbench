@@ -34,6 +34,10 @@ if [ "X$DEBUG_SCRIPT" != "X" ]; then
 	set -x
 fi
 
+if [ "X$FORMAT" = "X" ]; then
+	FORMAT=orc
+fi
+
 # Sanity checking.
 if [ X"$SCALE" = "X" ]; then
 	usage
@@ -74,7 +78,7 @@ else
 	SCHEMA_TYPE=partitioned
 fi
 
-DATABASE=tpch_${SCHEMA_TYPE}_orc_${SCALE}
+DATABASE=tpch_${SCHEMA_TYPE}_${FORMAT}_${SCALE}
 MAX_REDUCERS=2600 # ~7 years of data
 REDUCERS=$((test ${SCALE} -gt ${MAX_REDUCERS} && echo ${MAX_REDUCERS}) || echo ${SCALE})
 
@@ -85,7 +89,7 @@ do
 	    -d DB=${DATABASE} \
 	    -d SOURCE=tpch_text_${SCALE} -d BUCKETS=${BUCKETS} \
             -d SCALE=${SCALE} -d REDUCERS=${REDUCERS} \
-	    -d FILE=orc"
+	    -d FILE=${FORMAT}"
 	runcommand "$COMMAND"
 	if [ $? -ne 0 ]; then
 		echo "Command failed, try 'export DEBUG_SCRIPT=ON' and re-running"
